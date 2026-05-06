@@ -1,10 +1,10 @@
-#ifndef STUDENTE_H
+#ifndef STUDENTE_H //controllo se il file studente.h sia già stato incluso
 #define STUDENTE_H
 
 /**
  * SPECIFICA SINTATTICA ADT STUDENTE
  * Tipo di dato astratto per rappresentare uno studente dell'Ateneo.
- * Implementato tramite puntatore a struct per nascondere i dettagli (Information Hiding).
+ * Implementato tramite puntatore a struct per nascondere i dettagli.
  */
 typedef struct studente* Studente;
 
@@ -31,7 +31,7 @@ void studente_distruggi(Studente* s);
  * Semantica: Restituisce la stringa della matricola.
  * Pre-condizioni: s non deve essere NULL.
  */
-char* studente_get_matricola(Studente s);
+char* studente_ottieni_matricola(Studente s);
 
 /**
  * SPECIFICA SEMANTICA: studente_stampa
@@ -41,4 +41,4 @@ char* studente_get_matricola(Studente s);
  */
 void studente_stampa(Studente s);
 
-#endif
+#endif //se non è stato ancora incluso allora include il file

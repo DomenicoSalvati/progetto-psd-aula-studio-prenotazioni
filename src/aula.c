@@ -2,7 +2,6 @@
 #include <string.h>
 #include "aula.h"
 
-// definizione della struct per information hiding
 struct aula {
 	char nome[100];
 	int capienza_massima;
@@ -10,28 +9,24 @@ struct aula {
 	Studente* posti; // array dinamico per i posti fisici
 };
 
-// implemento le funzioni
 
 Aula aula_crea(char* nome, int capienza_massima){
-	// controllo sui parametri in ingresso
 	if (nome == NULL || capienza_massima <= 0){
 		return NULL;
 	}
 
-	// alloco dinamicamente la memoria per la struct
 	Aula a = (Aula) malloc(sizeof(struct aula));
 	if (a == NULL){
-		return NULL; // allocazione fallita
+		return NULL;
 	}
 
-	// copio la stringa in modo sicuro per evitare buffer overflow
 	strncpy(a->nome, nome, sizeof(a->nome)-1);
-	a->nome[sizeof(a->nome)-1] = '\0'; // per garantire il terminatore
+	a->nome[sizeof(a->nome)-1] = '\0';
 
 	a->capienza_massima = capienza_massima;
 	a->posti_occupati = 0;
 
-	// uso calloc per allocare l'array e inizializzare i puntatori a NULL (posti liberi)
+	// uso calloc (con cast) per inizializzare i puntatori a NULL (direttamente posti liberi)
 	a->posti = (Studente*) calloc(capienza_massima, sizeof(Studente));
 	if (a->posti == NULL){
 		free(a);
@@ -42,43 +37,37 @@ Aula aula_crea(char* nome, int capienza_massima){
 }
 
 void aula_distruggi(Aula* a){
-	// controllo che il puntatore e la struct non siano già nulli
 	if (a != NULL && *a != NULL){
 		if ((*a)->posti != NULL){
-			free((*a)->posti); // libero prima l'array dei posti
+			free((*a)->posti); //libero array
 		}
-		free(*a); // libero la memoria allocata con malloc
+		free(*a);
 		*a = NULL;
 	}
 }
 
-// gestisce l'ingresso senza prenotazione (cerca posto libero)
 int aula_ingresso_libero(Aula a, Studente s){
-	// controllo sui parametri in ingresso
 	if (a == NULL || s == NULL){
-		return 0; // 0 = errore o parametri nulli
+		return 0;
 	}
 
-	// controllo se ci sono posti fisicamente disponibili
 	if (a->posti_occupati >= a->capienza_massima){
-		return 0; // aula piena
+		return 0;
 	}
 
-	// cerco il primo posto libero (NULL) nell'array
-	for (int i = 0; i < a->capienza_massima; i++){
+
+	for (int i = 0; i < a->capienza_massima; i++){ //cerco il posto libero
 		if (a->posti[i] == NULL){
-			a->posti[i] = s; // faccio sedere lo studente
+			a->posti[i] = s;
 			a->posti_occupati++;
-			return 1; // 1 = successo
+			return 1;
 		}
 	}
 
 	return 0;
 }
 
-// registra l'uscita di uno studente e libera il posto
 int aula_uscita(Aula a, Studente s){
-	// controllo sui parametri in ingresso
 	if (a == NULL || s == NULL){
 		return 0;
 	}
@@ -86,12 +75,11 @@ int aula_uscita(Aula a, Studente s){
 	// cerco lo studente nell'array dei posti
 	for (int i = 0; i < a->capienza_massima; i++){
 		if (a->posti[i] == s){
-			a->posti[i] = NULL; // libero fisicamente il posto
+			a->posti[i] = NULL;
 			a->posti_occupati--;
-			return 1; // 1 = uscito con successo
+			return 1;
 		}
 	}
 
-	// se arrivo qui, lo studente non era in questa aula
 	return 0;
 }
