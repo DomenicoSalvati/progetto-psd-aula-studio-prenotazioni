@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "studente.h"
-#include "aula.h"
 
-// Definizione della struct (nel .c per garantire information hiding)
+// Definisco la struct
 
 struct studente {
 	char matricola[20];
@@ -16,7 +15,7 @@ struct studente {
  // Implemento le funzioni
 
  Studente studente_crea(char* matricola, char* nome, char* corso){
-	 // controllo sui parametri in ingresso
+	 // eseguo un controllo sui parametri in ingresso
 	 if (matricola == NULL || nome == NULL || corso == NULL){
 		 return NULL;
 				}
@@ -24,7 +23,7 @@ struct studente {
  // alloco dinamicamente la memoria per la struct
  Studente s = (Studente) malloc(sizeof(struct studente));
 	 if (s == NULL){
- 	 return NULL; //allocazione fallita
+ 	 return NULL;
 		}
 
  //copio le stringhe in modo sicuro per evitare buffer overflow
@@ -69,3 +68,4 @@ void studente_stampa(Studente s){
 		}
 
  }
+
