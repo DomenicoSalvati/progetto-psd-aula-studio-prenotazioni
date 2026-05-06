@@ -3,8 +3,6 @@
 #include <string.h>
 #include "studente.h"
 
-// Definisco la struct
-
 struct studente {
 	char matricola[20];
 	char nome[100];
@@ -12,23 +10,20 @@ struct studente {
 
 };
 
- // Implemento le funzioni
 
  Studente studente_crea(char* matricola, char* nome, char* corso){
-	 // eseguo un controllo sui parametri in ingresso
 	 if (matricola == NULL || nome == NULL || corso == NULL){
 		 return NULL;
 				}
 
- // alloco dinamicamente la memoria per la struct
- Studente s = (Studente) malloc(sizeof(struct studente));
+
+ Studente s = (Studente) malloc(sizeof(struct studente)); //eseguo sempre il cast al tipo
 	 if (s == NULL){
  	 return NULL;
 		}
 
- //copio le stringhe in modo sicuro per evitare buffer overflow
  strncpy(s->matricola, matricola, sizeof(s->matricola)-1);
- s->matricola[sizeof(s->matricola)-1] = '\0'; //per garantire il terminatore
+ s->matricola[sizeof(s->matricola)-1] = '\0';
 
  strncpy(s->nome, nome, sizeof(s->nome)-1);
  s->nome[sizeof(s->nome)-1] = '\0';
@@ -42,9 +37,8 @@ struct studente {
 
 
 void studente_distruggi(Studente* s){
-	//controllo che il puntatore e la struct non siano già nulli
 	if (s != NULL && *s != NULL){
-		free(*s); //libero la memoria allocata con malloc
+		free(*s);
 		*s = NULL;
 		}
 
@@ -52,7 +46,7 @@ void studente_distruggi(Studente* s){
 
 
 
-char* studente_get_matricola(Studente s){
+char* studente_ottieni_matricola(Studente s){
 	  if (s == NULL){
 	    return NULL;
 	  }

@@ -1,4 +1,4 @@
-#ifndef AULA_H
+#ifndef AULA_H //controllo se è già definito aula.h
 #define AULA_H
 
 #include "studente.h"
@@ -37,4 +37,4 @@ int aula_ingresso_libero(Aula a, Studente s);
  */
 int aula_uscita(Aula a, Studente s);
 
-#endif
+#endif //se non è già definito allora lo definisce
