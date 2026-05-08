@@ -78,6 +78,7 @@ int aula_uscita(Aula a, Studente s){
 	for (int i = 0; i < a->capienza_massima; i++){
 		if (a->posti[i] != NULL && strcmp(studente_ottieni_matricola(a->posti[i]), studente_ottieni_matricola(s)) == 0){
 			// libera il posto dello studente uscente
+			free(a->posti[i]);
 			a->posti[i] = NULL;
 			a->posti_occupati--;
 
@@ -91,7 +92,7 @@ int aula_uscita(Aula a, Studente s){
 		}
 	}
 
-	// Studente non trovato tra i seduti
+	// studente non trovato tra i seduti
 	return 0;
 }
 

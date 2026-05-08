@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <aula.h>
-#include <studente.h>
+#include "aula.h"
+#include "studente.h"
 
 
 int main(){
-	//Creo l'aula con 5 posti per fare i test
+	//creo l'aula con 5 posti per fare i test
 	Aula mia_aula = aula_crea("Aula Studio Archimede", 5);
 	  if(mia_aula == NULL){
 		printf("Errore: impossibile creare l'aula.\n");
@@ -23,7 +23,7 @@ int main(){
 	   printf("Scegli un'opzione: ");
 
 		if(scanf("%d", &scelta) !=1){
-			while(getchar() != '\n'); //Pulisce il buffer se l'utente inserisce una lettera
+			while(getchar() != '\n'); //pulisce il buffer se l'utente inserisce una lettera
 			scelta = -1;
 		   }
 
@@ -75,7 +75,7 @@ int main(){
 			 printf("Inserisci la matricola dello studente che deve uscire: ");
 			 scanf("%s", matricola_out);
 
-			 Studente s_out = studente_crea(matricola_out, "N/A", "N/A"); // Utilizzo "N/A"(non applicabile) perche' sono valori che non servono alla funzione
+			 Studente s_out = studente_crea(matricola_out, "N/A", "N/A"); // utilizzo "N/A"(non applicabile) perche' sono valori che non servono alla funzione
 
 
 			 int esito = aula_uscita(mia_aula, s_out);
@@ -100,7 +100,7 @@ int main(){
 
 		case 4:
 			 printf("Funzionalita' in sviluppo\n");
-
+			 break;
 
 
 		case 0:
