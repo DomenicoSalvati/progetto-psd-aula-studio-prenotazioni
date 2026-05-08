@@ -76,7 +76,7 @@ int aula_uscita(Aula a, Studente s){
 	if (a == NULL || s == NULL) return 0;
 
 	for (int i = 0; i < a->capienza_massima; i++){
-		if (a->posti[i] == s){
+		if (a->posti[i] != NULL && strcmp(studente_ottieni_matricola(a->posti[i]), studente_ottieni_matricola(s)) == 0){
 			// libera il posto dello studente uscente
 			a->posti[i] = NULL;
 			a->posti_occupati--;
