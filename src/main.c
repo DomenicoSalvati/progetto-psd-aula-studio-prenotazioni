@@ -36,7 +36,7 @@ int main(){
 			 char corso[50];
 
 
-			 printf("Inserisci matricola (numerica): ");
+			 printf("Inserisci matricola (alfanumerica): ");
 			 scanf("%s", matricola);
 
 			 printf("Inserisci nome (senza spazi): ");
@@ -56,12 +56,12 @@ int main(){
 				int esito = aula_ingresso(mia_aula, s);
 
 				if (esito == 1){
-					printf(">>> SUCCESSO: Lo studente %s e' entrato e si e' seduto.\n", nome);
+					printf(">>> SUCCESSO: Lo studente %s è entrato e si è seduto.\n", nome);
 
 					} else if (esito == 2){
-						printf(">>> AULA PIENA: Lo studente %s e' stato messo in lista d'attesa.\n", nome);
+						printf(">>> AULA PIENA: Lo studente %s è stato messo in lista d'attesa.\n", nome);
 						} else {
-							printf(">>> ERRORE: Si e' verificato un problema durante l'ingresso.\n");
+							printf(">>> ERRORE: Si è verificato un problema durante l'ingresso.\n");
 							}
 
 		  	 break;
@@ -70,20 +70,20 @@ int main(){
 		case 2: {
 			 printf("Hai scelto: Uscita studente.\n");
 			 printf("\n--- USCITA STUDENTE ---\n");
-			 char matricola_out[20];
+			 char matricola_uscente[20];
 
 			 printf("Inserisci la matricola dello studente che deve uscire: ");
-			 scanf("%s", matricola_out);
+			 scanf("%s", matricola_uscente);
 
-			 Studente s_out = studente_crea(matricola_out, "N/A", "N/A"); // utilizzo "N/A"(non applicabile) perche' sono valori che non servono alla funzione
+			 Studente s_uscente = studente_crea(matricola_uscente, "N/A", "N/A"); // utilizzo "N/A"(non applicabile) perchè sono valori che non servono alla funzione per lo scopo attuale
 
 
-			 int esito = aula_uscita(mia_aula, s_out);
+			 int esito = aula_uscita(mia_aula, s_uscente);
 				if(esito == 1){
-					printf(">>> SUCCESSO: Lo studente con matricola %s e' uscito.\n", matricola_out);
+					printf(">>> SUCCESSO: Lo studente con matricola %s è uscito.\n", matricola_uscente);
 					printf(">>> (Controlla lo stato per vedere se qualcuno in coda ha preso il suo posto)\n");
 					} else{
-						printf(">>> ERRORE: Studente con matricola %s non trovato in aula.\n", matricola_out);
+						printf(">>> ERRORE: Studente con matricola %s non trovato in aula.\n", matricola_uscente);
 						}
 
 
@@ -99,18 +99,18 @@ int main(){
 
 
 		case 4:
-			 printf("Funzionalita' in sviluppo\n");
+			 printf("Funzionalità in sviluppo\n");
 			 break;
 
 
 		case 0:
-			 printf("Chiusura del programma. Arrivederci.\n");
+			 printf("Chiusura del programma. Grazie per aver utilizzato il nostro gestore. Arrivederci.\n");
 			 break;
 
 
 
 		default:
-			 printf("Scelta non valida. Riprova.\n");
+			 printf("Scelta non valida. Riprova con un tasto numerico tra quelli proposti (1, 2, 3, 4, 0).\n");
 
 
 		}
