@@ -72,11 +72,11 @@ int aula_ingresso(Aula a, Studente s){
 	return 0;
 }
 
-int aula_uscita(Aula a, Studente s){
-	if (a == NULL || s == NULL) return 0;
+int aula_uscita(Aula a, char* matricola_da_cercare){
+	if (a == NULL || matricola_da_cercare  == NULL) return 0;
 
 	for (int i = 0; i < a->capienza_massima; i++){
-		if (a->posti[i] != NULL && strcmp(studente_ottieni_matricola(a->posti[i]), studente_ottieni_matricola(s)) == 0){
+		if (a->posti[i] != NULL && strcmp(studente_ottieni_matricola(a->posti[i]), matricola_da_cercare) == 0){
 			// libera il posto dello studente uscente
 			free(a->posti[i]);
 			a->posti[i] = NULL;

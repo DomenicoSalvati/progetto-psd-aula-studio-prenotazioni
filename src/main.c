@@ -75,10 +75,9 @@ int main(){
 			 printf("Inserisci la matricola dello studente che deve uscire: ");
 			 scanf("%s", matricola_uscente);
 
-			 Studente s_uscente = studente_crea(matricola_uscente, "N/A", "N/A"); // utilizzo "N/A"(non applicabile) perchè sono valori che non servono alla funzione per lo scopo attuale
 
 
-			 int esito = aula_uscita(mia_aula, s_uscente);
+			 int esito = aula_uscita(mia_aula, matricola_uscente);
 				if(esito == 1){
 					printf(">>> SUCCESSO: Lo studente con matricola %s è uscito.\n", matricola_uscente);
 					printf(">>> (Controlla lo stato per vedere se qualcuno in coda ha preso il suo posto)\n");
