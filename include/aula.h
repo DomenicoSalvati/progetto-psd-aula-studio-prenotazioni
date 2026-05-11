@@ -35,7 +35,7 @@ int aula_ingresso(Aula a, Studente s);
  * Pre-condizioni: a != NULL, s != NULL.
  * Post-condizioni: Restituisce 1 se rimosso con successo, 0 se lo studente non era presente o errore.
  */
-int aula_uscita(Aula a, Studente s);
+int aula_uscita(Aula a, char* matricola_da_cercare);
 
 /*
  * Specifica sintattica: void aula_stampa_stato(Aula a);
