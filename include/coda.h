@@ -7,7 +7,7 @@
  * Gestisce la lista d'attesa degli studenti quando l'aula è satura.
  */
 
-#ifndef CODA_H //Se non è definita la macro di coda.h allora definisci coda.h.
+#ifndef CODA_H // Se non è definita la macro di coda.h allora definisci coda.h.
 #define CODA_H
 
 #include "item.h"
@@ -15,8 +15,7 @@
 /**
  * TIPO DI DATO ASTRATTO: Coda
  *
- * Implementato tramite puntatore opaco per nascondere l'architettura
- * a nodi concatenati utilizzata nella parte di implementazione.
+ * Implementato tramite puntatore a struct.
  */
 typedef struct c_coda *Coda;
 

@@ -1,24 +1,23 @@
 /**
  * File: aula.h
  * Autori: Domenico e Mathias
- * Data: Maggio 2026
+ * Data: creato Aprile 2026, fine implementazioni Maggio 2026
  *
  * Descrizione: Interfaccia per l'ADT Aula. Definisce il tipo opaco e le
- * operazioni per gestire i posti a sedere, la coda d'attesa degli studenti
- * e la ricerca rapida tramite la Tabella Hash (Chaining).
+ * operazioni per gestire i posti a sedere, la coda d'attesa degli studenti,
+ * la ricerca rapida tramite la Tabella Hash (Chaining) e le prenotazioni.
  */
 
-#ifndef AULA_H //Se non è definita la macro di aula.h allora definisci aula.h
+#ifndef AULA_H // Se non è definita la macro di aula.h allora definisci aula.h.
 #define AULA_H
 
 #include "studente.h"
+#include "prenotazione.h"
 
 /**
  * TIPO DI DATO ASTRATTO: Aula
  *
- * Implementato tramite puntatore opaco a struct per garantire l'information
- * hiding. Nasconde la gestione degli array, della coda d'attesa e della
- * tabella hash interna.
+ * Implementato tramite puntatore a struct.
  */
 typedef struct aula* Aula;
 
@@ -29,7 +28,7 @@ typedef struct aula* Aula;
  *
  * Specifica semantica:
  * Alloca dinamicamente la memoria per un nuovo oggetto Aula, configurando
- * l'array dei posti, la coda d'attesa e la tabella hash di ricerca.
+ * l'array dei posti, la coda d'attesa, la tabella hash e il registro.
  *
  * Pre-condizioni:
  * Il parametro 'nome' deve essere una stringa valida (non NULL).
@@ -39,8 +38,7 @@ typedef struct aula* Aula;
  * Viene creato un nuovo oggetto Aula inizializzato e pronto all'uso.
  *
  * Valore di ritorno:
- * Puntatore alla nuova Aula creata. Restituisce NULL se uno dei parametri
- * non è valido o se fallisce l'allocazione della memoria nell'heap.
+ * Puntatore alla nuova Aula creata. Restituisce NULL in caso di errore.
  */
 Aula aula_crea(char* nome, int capienza_massima);
 
@@ -51,15 +49,13 @@ Aula aula_crea(char* nome, int capienza_massima);
  *
  * Specifica semantica:
  * Rilascia l'intera memoria occupata dall'aula, distruggendo tutti gli oggetti
- * studente seduti, svuotando la coda e deallocando tutti i nodi della tabella hash.
+ * interni, la coda, la tabella hash e deallocando le prenotazioni.
  *
  * Pre-condizioni:
- * L'indirizzo 'a' non deve essere NULL e '*a' deve puntare a un oggetto
- * Aula valido allocato in precedenza.
+ * L'indirizzo 'a' non deve essere NULL e '*a' deve puntare a un'Aula valida.
  *
  * Post-condizioni:
- * Tutta la memoria associata all'aula viene liberata. Il puntatore '*a'
- * viene impostato a NULL per prevenire dangling pointers.
+ * Tutta la memoria associata all'aula viene liberata. Puntatore a NULL.
  *
  * Valore di ritorno:
  * Nessuno (void).
@@ -72,9 +68,7 @@ void aula_distruggi(Aula* a);
  * int aula_ingresso(Aula a, Studente s);
  *
  * Specifica semantica:
- * Gestisce l'ingresso di uno studente. Se c'è un posto fisico libero, lo studente
- * viene fatto sedere e mappato nella tabella hash. Se l'aula è satura, viene
- * inserito in coda d'attesa rispettando la logica FIFO.
+ * Gestisce l'ingresso diretto di uno studente.
  *
  * Pre-condizioni:
  * L'oggetto 'a' e l'oggetto 's' devono essere puntatori validi (non NULL).
@@ -83,8 +77,7 @@ void aula_distruggi(Aula* a);
  * Lo studente viene inserito nei posti a sedere o nella coda d'attesa.
  *
  * Valore di ritorno:
- * Restituisce 1 se lo studente si è seduto, 2 se è stato inserito in coda
- * d'attesa, 0 in caso di errore o parametri non validi.
+ * 1 (seduto), 2 (in coda d'attesa), 0 (errore).
  */
 int aula_ingresso(Aula a, Studente s);
 
@@ -94,20 +87,16 @@ int aula_ingresso(Aula a, Studente s);
  * int aula_uscita(Aula a, char* matricola_da_cercare);
  *
  * Specifica semantica:
- * Rimuove uno studente dall'aula identificandolo tramite la matricola. La ricerca
- * avviene in tempo costante O(1) grazie alla tabella hash. Se rimosso, viene
- * fatto subentrare automaticamente il primo studente in coda d'attesa.
+ * Rimuove uno studente dall'aula identificandolo tramite la matricola in O(1).
  *
  * Pre-condizioni:
- * L'oggetto 'a' e la stringa 'matricola_da_cercare' non devono essere NULL.
+ * 'a' e 'matricola_da_cercare' non devono essere NULL.
  *
  * Post-condizioni:
- * Lo studente esce dall'aula. Il suo posto viene liberato e, se presente qualcuno
- * in coda, viene occupato dal nuovo subentrante (aggiornando la tabella hash).
+ * Lo studente esce dall'aula, subentra il primo in coda.
  *
  * Valore di ritorno:
- * Restituisce 1 se l'operazione di uscita ha successo, 0 se lo studente
- * con quella specifica matricola non era presente nell'aula.
+ * 1 (successo), 0 (studente non presente).
  */
 int aula_uscita(Aula a, char* matricola_da_cercare);
 
@@ -117,18 +106,89 @@ int aula_uscita(Aula a, char* matricola_da_cercare);
  * void aula_stampa_stato(Aula a);
  *
  * Specifica semantica:
- * Mostra sullo standard output lo stato corrente dell'aula, elencando tutti
- * i posti occupati con i dettagli degli studenti e lo stato della coda d'attesa.
+ * Mostra sullo standard output lo stato corrente dell'aula.
  *
  * Pre-condizioni:
- * L'oggetto 'a' deve essere un puntatore valido (non NULL).
+ * L'oggetto 'a' deve essere valido.
  *
  * Post-condizioni:
- * Lo stato interno dell'aula e della tabella hash rimane del tutto inalterato.
+ * Nessuna modifica interna.
  *
  * Valore di ritorno:
  * Nessuno (void).
  */
 void aula_stampa_stato(Aula a);
+
+/**
+ * Specifica sintattica:
+ * int aula_aggiungi_prenotazione(Aula a, Prenotazione p);
+ *
+ * Specifica semantica:
+ * Registra una nuova prenotazione nel sistema dell'aula.
+ *
+ * Pre-condizioni:
+ * 'a' e 'p' puntatori validi.
+ *
+ * Post-condizioni:
+ * La prenotazione viene inserita nel registro storico interno.
+ *
+ * Valore di ritorno:
+ * 1 (successo), 0 (errore).
+ */
+int aula_aggiungi_prenotazione(Aula a, Prenotazione p);
+
+/**
+ * Specifica sintattica:
+ * int aula_checkin_prenotazione(Aula a, char* matricola);
+ *
+ * Specifica semantica:
+ * Convalida l'arrivo di uno studente prenotato facendolo fisicamente entrare.
+ *
+ * Pre-condizioni:
+ * 'a' e 'matricola' validi.
+ *
+ * Post-condizioni:
+ * Stato prenotazione aggiornato e studente smistato (posto fisico o coda).
+ *
+ * Valore di ritorno:
+ * 1 (check-in fatto, seduto), 2 (check-in fatto, in coda), -1 (già entrato), 0 (non trovato).
+ */
+int aula_checkin_prenotazione(Aula a, char* matricola);
+
+/**
+ * Specifica sintattica:
+ * int aula_annulla_prenotazione(Aula a, char* matricola);
+ *
+ * Specifica semantica:
+ * Rimuove una prenotazione pendente e dealloca lo studente associato.
+ *
+ * Pre-condizioni:
+ * 'a' e 'matricola' validi.
+ *
+ * Post-condizioni:
+ * Prenotazione rimossa definitivamente dal sistema.
+ *
+ * Valore di ritorno:
+ * 1 (successo), 0 (fallimento o già in aula).
+ */
+int aula_annulla_prenotazione(Aula a, char* matricola);
+
+/**
+ * Specifica sintattica:
+ * void aula_stampa_report_prenotazioni(Aula a);
+ *
+ * Specifica semantica:
+ * Genera il report statistico degli accessi e dei no-show.
+ *
+ * Pre-condizioni:
+ * 'a' valido.
+ *
+ * Post-condizioni:
+ * Nessuna.
+ *
+ * Valore di ritorno:
+ * Nessuno.
+ */
+void aula_stampa_report_prenotazioni(Aula a);
 
 #endif

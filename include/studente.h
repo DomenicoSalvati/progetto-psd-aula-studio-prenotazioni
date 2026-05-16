@@ -8,15 +8,14 @@
  * e distruggere le informazioni di un singolo studente universitario.
  */
 
-#ifndef STUDENTE_H //Se non è definita la macro di studente.h allora definisci studente.h.
+#ifndef STUDENTE_H // Se non è definita la macro di studente.h allora definisci studente.h.
 #define STUDENTE_H
 
 
 /**
  * TIPO DI DATO ASTRATTO: Studente
  *
- * Implementato tramite puntatore opaco a struct per garantire l'information
- * hiding. Nasconde i dettagli interni (matricola, nome, corso) all'utente.
+ * Implementato tramite puntatore a struct. Nasconde matricola, nome, corso all'utente.
  */
 typedef struct studente* Studente;
 
