@@ -131,4 +131,53 @@ int prenotazione_ottieni_stato(Prenotazione p);
  */
 void prenotazione_stampa(Prenotazione p);
 
+
+/**
+ * Specifica sintattica:
+ * int valida_data(const char* data);
+ *
+ * Specifica semantica:
+ * Verifica che la stringa passata come parametro rispetti
+ * il formato di una data espressa come "GG/MM/AAAA".
+ *
+ * Pre-condizioni:
+ * Il parametro 'data' deve essere un puntatore a una stringa valida,
+ * correttamente terminata dal carattere '\0' e non deve essere NULL.
+ *
+ * Post-condizioni:
+ * lo stato del sistema e la stringa originale 'data' rimangono inalterati
+ *(garantito dal quantificatore 'const'). La funzione termina restituendo un valore intero.
+ *
+ * Valori di ritorno:
+ * Ritorna 1 se la stringa rispetta il formato data richiesto.
+ * Ritorna 0 se la lunghezza, i separatori o i caratteri non sono corretti.
+*/
+
+int valida_data(const char* data);
+
+
+/**
+ * Specifica sintattica:
+ * int valida_fascia(const char* fascia);
+ *
+ * Specifica semantica:
+ * Verifica che la stringa passata come parametro rispetti
+ * il formato di una fascia oraria espressa come "HH:MM-HH:MM".
+ *
+ * Pre-condizioni:
+ * Il parametro 'fascia' deve essere un puntatore a una stringa valida,
+ * correttamente terminata dal carattere '\0' e non deve essere NULL.
+ *
+ * Post-condizioni:
+ * Lo stato delsistema e la stringa originale 'fascia' rimangono inalterati
+ * (garantito dal quantificatore 'const'). La funzione termina restituendo un valore intero.
+ *
+ * Valori di ritorno:
+ * Ritorna 1 se la stringa rispetta il formato della fascia oraria richiesto.
+ * Ritorna 0 se la lunghezza, i separatori oi caratteri non sono corretti.
+*/
+
+int valida_fascia(const char* fascia);
+
+
 #endif
