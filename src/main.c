@@ -49,14 +49,14 @@ int main(){
 			 char corso[50];
 
 
-			 printf("Inserisci matricola (alfanumerica): ");
-			 scanf("%s", matricola);
+			 printf("Inserisci matricola (alfanumerica e max 19 caratteri): ");
+			 scanf("%19s", matricola);
 
-			 printf("Inserisci nome (senza spazi): ");
-			 scanf("%s", nome);
+			 printf("Inserisci nome (senza spazi e max 49 caratteri): ");
+			 scanf("%49s", nome);
 
-			 printf("Inserisci il corso di laurea (senza spazi): ");
-			 scanf("%s", corso);
+			 printf("Inserisci il corso di laurea (senza spazi e max 49 caratteri): ");
+			 scanf("%49s", corso);
 
 
 			 Studente s = studente_crea(matricola, nome, corso);
@@ -85,8 +85,8 @@ int main(){
 			 printf("\n--- USCITA STUDENTE ---\n");
 			 char matricola_uscente[20];
 
-			 printf("Inserisci la matricola dello studente che deve uscire: ");
-			 scanf("%s", matricola_uscente);
+			 printf("Inserisci la matricola dello studente che deve uscire (max 19 caratteri): ");
+			 scanf("%19s", matricola_uscente);
 
 
 
@@ -132,16 +132,26 @@ int main(){
 					     char data_pren[15], fascia_pren[30];
 
 					     printf("\n--- NUOVA PRENOTAZIONE ---\n");
-					     printf("Inserisci matricola: ");
-					     scanf("%s", mat_pren);
-					     printf("Inserisci nome: ");
-					     scanf("%s", nome_pren);
-					     printf("Inserisci corso: ");
-					     scanf("%s", corso_pren);
-					     printf("Inserisci data (GG/MM/AAAA): ");
-					     scanf("%s", data_pren);
-					     printf("Inserisci fascia oraria (es. 09:00-11:00): ");
-					     scanf("%s", fascia_pren);
+					     printf("Inserisci matricola (max 19 caratteri): ");
+					     scanf("%19s", mat_pren);
+					     printf("Inserisci nome(max 49 caratteri): ");
+					     scanf("%49s", nome_pren);
+					     printf("Inserisci corso(max 49 caratteri): ");
+					     scanf("%49s", corso_pren);
+
+					     printf("Inserisci data (GG/MM/AAAA, max 14 caratteri): ");
+					     scanf("%14s", data_pren);
+						if(!valida_data(data_pren)){
+							printf(">>> ERRORE: Formato non valido. Deve essere GG/MM/AAAA.\n");
+							break;
+								}
+
+					     printf("Inserisci fascia oraria (es. 09:00-11:00, max 29 caratteri): ");
+					     scanf("%29s", fascia_pren);
+						if(!valida_fascia(fascia_pren)){
+							printf(">>> ERRORE: Formato fascia oraria non valido. Deve essere HH:MM-HH:MM.\n");
+							break;
+								}
 
 
 					     Studente stud = studente_crea(mat_pren, nome_pren, corso_pren);
@@ -159,8 +169,8 @@ int main(){
 					case 2: {
 					     char mat_checkin[20];
 					     printf("\n--- EFFETTUA CHECK-IN ---\n");
-					     printf("Inserisci la matricola dello studente: ");
-					     scanf("%s", mat_checkin);
+					     printf("Inserisci la matricola dello studente(max 19 caratteri): ");
+					     scanf("%19s", mat_checkin);
 
 					     int risultato = aula_checkin_prenotazione(mia_aula, mat_checkin);
 						if(risultato == 1){
@@ -179,8 +189,8 @@ int main(){
 					case 3: {
 					     char mat_annulla[20];
 					     printf("\n--- ANNULLA PRENOTAZIONE ---\n");
-					     printf("Inserisci la matricola da annullare: ");
-					     scanf("%s", mat_annulla);
+					     printf("Inserisci la matricola da annullare(max 19 caratteri): ");
+					     scanf("%19s", mat_annulla);
 
 						// Sfrutta la valutazione booleana del C: procede solo se la funzione restituisce un valore diverso da 0
 						if(aula_annulla_prenotazione(mia_aula, mat_annulla)){
