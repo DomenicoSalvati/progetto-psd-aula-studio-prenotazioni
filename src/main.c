@@ -52,6 +52,11 @@ int main(){
 			 printf("Inserisci matricola (alfanumerica e max 19 caratteri): ");
 			 scanf("%19s", matricola);
 
+				if(aula_studente_esiste(mia_aula, matricola)){
+						 printf(">>> ERRORE: Ingresso rifiutato. Lo studente con matricola %s e' gia' presente in aula.\n", matricola);
+						 break;
+						}
+
 			 printf("Inserisci nome (senza spazi e max 49 caratteri): ");
 			 scanf("%49s", nome);
 
