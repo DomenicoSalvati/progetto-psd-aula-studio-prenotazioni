@@ -17,7 +17,7 @@
 
 #define DIMENSIONE_HASH 97
 
-// Struttura che mappa l'elemento della tabella hash. 
+// Struttura che mappa l'elemento della tabella hash.
 struct nodo_hash {
     char chiave[20];
     int indice_posto;
@@ -356,4 +356,18 @@ void aula_stampa_report_prenotazioni(Aula a) {
     printf("Accessi Effettivi (Check-in completato): %d\n", accessi_effettivi);
     printf("Assenti / In attesa di arrivo: %d\n", assenti);
     printf("===========================================\n");
+}
+
+
+
+
+int aula_studente_esiste(Aula a, char* matricola){
+	if(a == NULL || matricola == NULL){
+				 return 0;
+				}
+
+	if(hash_cerca(a, matricola) != NULL){
+				 return 1; // La matricola esiste già
+				}
+	return 0;
 }

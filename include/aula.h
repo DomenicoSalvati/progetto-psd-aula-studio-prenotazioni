@@ -191,4 +191,7 @@ int aula_annulla_prenotazione(Aula a, char* matricola);
  */
 void aula_stampa_report_prenotazioni(Aula a);
 
+/***/
+int aula_studente_esiste(Aula a, char* matricola);
+
 #endif
