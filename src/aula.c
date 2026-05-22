@@ -43,7 +43,18 @@ struct aula {
 
 // --- FUNZIONI PRIVATE PER INDICE HASH SECONDARIO ---
 
-// Calcola l'indice della tabella (hashing) sfruttando l'algoritmo djb2.
+/**
+ * Calcola l'indice della tabella (hashing) sfruttando l'algoritmo djb2.
+ *
+ * Utilizzata internamente per smistare gli studenti nei bucket dell'hash.
+ *
+ * Parametri:
+ * chiave: la stringa da elaborare (matricola)
+ * modulo: la dimensione della tabella hash
+ *
+ * Ritorna:
+ * L'indice calcolato per l'inserimento.
+ */
 static int calcola_hash(char *chiave, int modulo) {
     unsigned long valore_hash = 5381;
     int carattere;
@@ -53,7 +64,19 @@ static int calcola_hash(char *chiave, int modulo) {
     return valore_hash % modulo;
 }
 
-// Inserisce in tabella una nuova mappatura tra matricola e numero di posto.
+/**
+ * Inserisce in tabella una nuova mappatura tra matricola e numero di posto.
+ *
+ * Viene invocata quando uno studente si siede fisicamente in un posto.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * chiave: matricola dello studente
+ * indice_posto: il numero del posto assegnato
+ *
+ * Ritorna:
+ * 1 in caso di successo, 0 in caso di fallimento o chiave già presente.
+ */
 static int hash_inserisci(Aula a, char *chiave, int indice_posto) {
     int indice_hash;
     struct nodo_hash *testa, *corrente;
@@ -78,7 +101,18 @@ static int hash_inserisci(Aula a, char *chiave, int indice_posto) {
     return 1;
 }
 
-// Cerca il nodo contenente il riferimento al posto, partendo dalla matricola.
+/**
+ * Cerca il nodo contenente il riferimento al posto, partendo dalla matricola.
+ *
+ * Garantisce un tempo di ricerca tendente a O(1) in media.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * chiave: matricola da cercare
+ *
+ * Ritorna:
+ * Il puntatore al nodo hash individuato, oppure NULL se non presente.
+ */
 static struct nodo_hash* hash_cerca(Aula a, char *chiave) {
     int indice_hash = calcola_hash(chiave, DIMENSIONE_HASH);
     struct nodo_hash *corrente = a->tabella_ricerca[indice_hash];
@@ -90,7 +124,18 @@ static struct nodo_hash* hash_cerca(Aula a, char *chiave) {
     return NULL;
 }
 
-// Rimuove la matricola dalla tabella, ricollegando correttamente la catena.
+/**
+ * Rimuove la matricola dalla tabella, ricollegando correttamente la catena.
+ *
+ * Fondamentale durante l'uscita dello studente per svuotare il registro hash.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * chiave: matricola da rimuovere
+ *
+ * Ritorna:
+ * Il puntatore al nodo estratto (per la successiva deallocazione).
+ */
 static struct nodo_hash* hash_rimuovi(Aula a, char *chiave) {
     int indice_hash;
     struct nodo_hash *precedente, *corrente, *testa;
@@ -113,7 +158,17 @@ static struct nodo_hash* hash_rimuovi(Aula a, char *chiave) {
     return NULL;
 }
 
-// Libera iterativamente tutta la memoria occupata dai nodi di un singolo bucket.
+/**
+ * Libera iterativamente tutta la memoria occupata dai nodi di un singolo bucket.
+ *
+ * Funzione di supporto chiamata durante la fase di distruzione dell'aula.
+ *
+ * Parametri:
+ * p: puntatore al primo nodo della lista concatenata
+ *
+ * Ritorna:
+ * Nessuno (void).
+ */
 static void distruggi_lista_hash(struct nodo_hash *p) {
     struct nodo_hash *corrente = p;
     while (corrente != NULL) {
@@ -125,7 +180,52 @@ static void distruggi_lista_hash(struct nodo_hash *p) {
 
 // --- FINE FUNZIONI PRIVATE HASH ---
 
-// Alloca e predispone tutte le strutture dati interne necessarie per la gestione dell'aula.
+/**
+ * Calcola se due fasce orarie si accavallano temporalmente.
+ *
+ * Analizza le stringhe delle fasce orarie e converte i tempi in minuti
+ * per eseguire un confronto matematico e prevenire doppie prenotazioni.
+ *
+ * Parametri:
+ * f1: puntatore alla stringa della prima fascia oraria
+ * f2: puntatore alla stringa della seconda fascia oraria
+ *
+ * Ritorna:
+ * 1 se le fasce si sovrappongono, 0 altrimenti.
+ */
+static int controllo_sovrapposizione(const char* f1, const char* f2) {
+    int in1_h, in1_m, out1_h, out1_m;
+    int in2_h, in2_m, out2_h, out2_m;
+
+    sscanf(f1, "%d:%d-%d:%d", &in1_h, &in1_m, &out1_h, &out1_m);
+    sscanf(f2, "%d:%d-%d:%d", &in2_h, &in2_m, &out2_h, &out2_m);
+
+    int inizio1 = in1_h * 60 + in1_m;
+    int fine1 = out1_h * 60 + out1_m;
+    int inizio2 = in2_h * 60 + in2_m;
+    int fine2 = out2_h * 60 + out2_m;
+
+    // Due intervalli si sovrappongono se il primo inizia prima che il secondo finisca,
+    // e il secondo inizia prima che il primo finisca.
+    if (inizio1 < fine2 && inizio2 < fine1) {
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * Alloca e predispone tutte le strutture dati interne necessarie.
+ *
+ * Inizializza a vuoto l'array dei posti fisici, la coda e la tabella hash,
+ * implementando un sistema di fallback per la pulizia della memoria in caso di errori.
+ *
+ * Parametri:
+ * nome: stringa identificativa dell'aula
+ * capienza_massima: numero di posti totali
+ *
+ * Ritorna:
+ * Il puntatore all'istanza creata, oppure NULL in caso di fallimento dell'allocazione.
+ */
 Aula aula_crea(char* nome, int capienza_massima) {
     if (nome == NULL || capienza_massima <= 0) return NULL;
 
@@ -153,7 +253,18 @@ Aula aula_crea(char* nome, int capienza_massima) {
     return a;
 }
 
-// Dealloca gli studenti, svuota la coda, distrugge la tabella hash e il registro.
+/**
+ * Dealloca gli studenti, svuota la coda, distrugge la tabella hash e il registro.
+ *
+ * Scorre le prenotazioni e distrugge gli studenti che non hanno effettuato l'accesso,
+ * azzerando infine il puntatore principale.
+ *
+ * Parametri:
+ * a: doppio puntatore all'oggetto Aula
+ *
+ * Ritorna:
+ * Nessuno (void).
+ */
 void aula_distruggi(Aula* a) {
     if (a != NULL && *a != NULL) {
 
@@ -189,20 +300,31 @@ void aula_distruggi(Aula* a) {
     }
 }
 
-// Assegna un posto allo studente se disponibile, oppure lo accoda in lista d'attesa.
-int aula_ingresso(Aula a, Studente s) {
+/**
+ * Assegna un posto specifico allo studente se disponibile, oppure lo accoda.
+ *
+ * Verifica rigorosamente che l'indice richiesto sia entro i limiti dell'aula.
+ * Se il posto fisico e' vuoto lo occupa, altrimenti smista lo studente nella lista d'attesa.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * s: puntatore allo Studente
+ * posto_richiesto: l'intero che identifica la sedia scelta
+ *
+ * Ritorna:
+ * 1 (ingresso effettuato), 2 (messo in coda), 0 (errore o posto non valido).
+ */
+int aula_ingresso(Aula a, Studente s, int posto_richiesto) {
     if (a == NULL || s == NULL) return 0;
 
-    if (a->posti_occupati < a->capienza_massima) {
-        for (int i = 0; i < a->capienza_massima; i++) {
-            if (a->posti[i] == NULL) {
-                a->posti[i] = s;
-                a->posti_occupati++;
+    if (posto_richiesto < 0 || posto_richiesto >= a->capienza_massima) return 0;
 
-                hash_inserisci(a, studente_ottieni_matricola(s), i);
-                return 1;
-            }
-        }
+    if (a->posti_occupati < a->capienza_massima && a->posti[posto_richiesto] == NULL) {
+        a->posti[posto_richiesto] = s;
+        a->posti_occupati++;
+
+        hash_inserisci(a, studente_ottieni_matricola(s), posto_richiesto);
+        return 1;
     }
 
     if (coda_inserisci(s, a->lista_attesa)) {
@@ -212,7 +334,19 @@ int aula_ingresso(Aula a, Studente s) {
     return 0;
 }
 
-// Ricerca lo studente tramite hash, libera il posto e fa subentrare chi è in coda.
+/**
+ * Ricerca lo studente tramite hash, libera il posto e fa subentrare chi è in coda.
+ *
+ * Intercetta il nodo rimosso dalla tabella e lo dealloca in sicurezza, gestendo
+ * l'ingresso automatico del primo studente pendente nel posto appena liberato.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * matricola_da_cercare: la matricola dell'utente che lascia l'aula
+ *
+ * Ritorna:
+ * 1 in caso di successo, 0 se la matricola non viene trovata.
+ */
 int aula_uscita(Aula a, char* matricola_da_cercare) {
     if (a == NULL || matricola_da_cercare == NULL) return 0;
 
@@ -241,7 +375,18 @@ int aula_uscita(Aula a, char* matricola_da_cercare) {
     return 0;
 }
 
-// Produce una sintesi stampata dei posti fisici occupati e dello stato d'attesa.
+/**
+ * Produce una sintesi stampata dei posti fisici occupati e dello stato d'attesa.
+ *
+ * Itera sull'array dei posti mostrando esclusivamente quelli in cui siede qualcuno,
+ * per poi generare a schermo anche l'attuale situazione della lista d'attesa virtuale.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ *
+ * Ritorna:
+ * Nessuno (void).
+ */
 void aula_stampa_stato(Aula a) {
     if (a != NULL) {
         printf("\n--- STATO AULA: %s ---\n", a->nome);
@@ -249,7 +394,7 @@ void aula_stampa_stato(Aula a) {
 
         for (int i = 0; i < a->capienza_massima; i++) {
             if (a->posti[i] != NULL) {
-                printf("Posto %d: ", i + 1);
+                printf("Posto %d: ", i);
                 studente_stampa(a->posti[i]);
             }
         }
@@ -263,9 +408,36 @@ void aula_stampa_stato(Aula a) {
     }
 }
 
-// Registra la pratica di prenotazione inserendola in testa al registro storico.
+/**
+ * Registra la pratica di prenotazione prevenendo i conflitti di orario.
+ *
+ * Controlla che il posto richiesto non sia già stato prenotato da qualcun altro
+ * per la medesima data e in una fascia oraria sovrapposta, iterando sullo storico.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * p: oggetto Prenotazione da registrare
+ *
+ * Ritorna:
+ * 1 se allocato con successo, 0 in caso di conflitti o errore.
+ */
 int aula_aggiungi_prenotazione(Aula a, Prenotazione p) {
     if (a == NULL || p == NULL) return 0;
+
+    struct nodo_prenotazione* corrente = a->registro_prenotazioni;
+    while(corrente != NULL) {
+        // Se stesso posto, stessa data e la prenotazione non è annullata...
+        if (prenotazione_ottieni_posto(corrente->pratica) == prenotazione_ottieni_posto(p) &&
+            strcmp(prenotazione_ottieni_data(corrente->pratica), prenotazione_ottieni_data(p)) == 0 &&
+            prenotazione_ottieni_stato(corrente->pratica) != -1) {
+
+            // ...controlliamo matematicamente se le ore si scontrano
+            if (controllo_sovrapposizione(prenotazione_ottieni_fascia(corrente->pratica), prenotazione_ottieni_fascia(p))) {
+                return 0; // Conflitto di orario/sedia intercettato!
+            }
+        }
+        corrente = corrente->prossimo;
+    }
 
     struct nodo_prenotazione* nuovo = malloc(sizeof(struct nodo_prenotazione));
     if (nuovo == NULL) return 0;
@@ -277,7 +449,19 @@ int aula_aggiungi_prenotazione(Aula a, Prenotazione p) {
     return 1;
 }
 
-// Convalida l'arrivo ricercando la pratica e inoltrando lo studente al sistema fisico.
+/**
+ * Convalida l'arrivo ricercando la pratica e inoltrando lo studente al sistema fisico.
+ *
+ * Impedisce doppie convalide verificando lo stato di check-in della pratica e
+ * indirizza lo studente verso il posto specifico registrato precedentemente.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * matricola: stringa che identifica la prenotazione da convalidare
+ *
+ * Ritorna:
+ * 1 (check-in e seduto), 2 (check-in e in coda), -1 (check-in già fatto), 0 (errore).
+ */
 int aula_checkin_prenotazione(Aula a, char* matricola) {
     if (a == NULL || matricola == NULL) return 0;
 
@@ -289,9 +473,12 @@ int aula_checkin_prenotazione(Aula a, char* matricola) {
 
             if (prenotazione_ottieni_stato(corrente->pratica) == 0) {
                 prenotazione_effettua_checkin(corrente->pratica);
-                return aula_ingresso(a, s);
+
+                int posto_riservato = prenotazione_ottieni_posto(corrente->pratica);
+
+                return aula_ingresso(a, s, posto_riservato);
             } else {
-                return -1; 
+                return -1;
             }
         }
         corrente = corrente->prossimo;
@@ -299,7 +486,19 @@ int aula_checkin_prenotazione(Aula a, char* matricola) {
     return 0;
 }
 
-// Elimina una prenotazione pendente prevenendo l'occupazione inutile della memoria.
+/**
+ * Elimina una prenotazione pendente prevenendo l'occupazione inutile della memoria.
+ *
+ * Ricerca la pratica nel registro, garantendo l'integrità dei puntatori circostanti e
+ * bloccando l'annullamento qualora lo studente sia già subentrato fisicamente in aula.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * matricola: stringa che identifica la prenotazione da annullare
+ *
+ * Ritorna:
+ * 1 in caso di successo, 0 se la pratica non esiste o non è modificabile.
+ */
 int aula_annulla_prenotazione(Aula a, char* matricola) {
     if (a == NULL || matricola == NULL) return 0;
 
@@ -329,7 +528,18 @@ int aula_annulla_prenotazione(Aula a, char* matricola) {
     return 0;
 }
 
-// Genera un report analitico iterando sul registro storico.
+/**
+ * Genera un report analitico dettagliato per il monitoraggio dell'aula.
+ *
+ * Include il conteggio degli studenti in attesa e una sintesi delle presenze
+ * raggruppate per singola fascia oraria.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ *
+ * Ritorna:
+ * Nessuno (void).
+ */
 void aula_stampa_report_prenotazioni(Aula a) {
     if (a == NULL) return;
 
@@ -340,6 +550,7 @@ void aula_stampa_report_prenotazioni(Aula a) {
     struct nodo_prenotazione* corrente = a->registro_prenotazioni;
 
     printf("\n=== REPORT STATISTICO E STORICO ACCESSI ===\n");
+
     while(corrente != NULL) {
         totali++;
         if (prenotazione_ottieni_stato(corrente->pratica) == 1) {
@@ -355,19 +566,43 @@ void aula_stampa_report_prenotazioni(Aula a) {
     printf("Totale Prenotazioni processate: %d\n", totali);
     printf("Accessi Effettivi (Check-in completato): %d\n", accessi_effettivi);
     printf("Assenti / In attesa di arrivo: %d\n", assenti);
+
+    printf("Studenti attualmente in coda d'attesa: %d\n", coda_lunghezza(a->lista_attesa));
+
+    printf("\n--- OCCUPAZIONE PER FASCIA ORARIA ---\n");
+    corrente = a->registro_prenotazioni;
+    while(corrente != NULL) {
+        if(prenotazione_ottieni_stato(corrente->pratica) == 1) {
+            printf("- Fascia %s | Data: %s | Posto occupato: %02d\n",
+                   prenotazione_ottieni_fascia(corrente->pratica),
+                   prenotazione_ottieni_data(corrente->pratica),
+                   prenotazione_ottieni_posto(corrente->pratica));
+        }
+        corrente = corrente->prossimo;
+    }
     printf("===========================================\n");
 }
 
-
-
-
+/**
+ * Verifica l'effettiva presenza di uno studente all'interno della struttura.
+ *
+ * Utilizza la tabella hash interna per restituire una risposta immediata,
+ * permettendo di filtrare i duplicati.
+ *
+ * Parametri:
+ * a: puntatore all'oggetto Aula
+ * matricola: stringa che identifica lo studente da ricercare
+ *
+ * Ritorna:
+ * 1 qualora la matricola esista già, 0 altrimenti.
+ */
 int aula_studente_esiste(Aula a, char* matricola){
 	if(a == NULL || matricola == NULL){
-				 return 0;
-				}
+        return 0;
+    }
 
 	if(hash_cerca(a, matricola) != NULL){
-				 return 1; // La matricola esiste già
-				}
+        return 1;
+    }
 	return 0;
 }

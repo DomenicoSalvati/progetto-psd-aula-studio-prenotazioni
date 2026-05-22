@@ -5,10 +5,10 @@
  *
  * Descrizione: Interfaccia dell'ADT Prenotazione. Definisce il tipo opaco e
  * le operazioni per gestire le prenotazioni degli studenti, includendo data,
- * fascia oraria e lo stato di validazione (check-in).
+ * fascia oraria, posto assegnato e lo stato di validazione (check-in).
  */
 
-#ifndef PRENOTAZIONE_H // Se la macro di prenotazione.h non è definita, allora definisci prenotazione.h.
+#ifndef PRENOTAZIONE_H //Se non è definita la macro in prenotazione.h, allora definisci prenotazione.h.
 #define PRENOTAZIONE_H
 
 #include "studente.h"
@@ -21,15 +21,15 @@ typedef struct prenotazione* Prenotazione;
 
 /**
  * Specifica sintattica:
- * Prenotazione prenotazione_crea(Studente s, char* data, char* fascia);
+ * Prenotazione prenotazione_crea(Studente s, char* data, char* fascia, int posto_scelto);
  *
  * Specifica semantica:
- * Alloca e inizializza un oggetto Prenotazione. Lo stato iniziale è
- * impostato di default a 0 (Prenotato / Da confermare).
+ * Alloca e inizializza un oggetto Prenotazione assegnando studente, data, 
+ * fascia oraria e il numero di sedia specifico scelto.
  *
  * Pre-condizioni:
  * Il parametro 's' deve essere uno Studente valido. 'data' e 'fascia'
- * non devono essere stringhe NULL.
+ * non devono essere stringhe NULL. 'posto_scelto' deve essere valido.
  *
  * Post-condizioni:
  * Viene creata una nuova prenotazione pronta per essere gestita dal sistema.
@@ -37,7 +37,7 @@ typedef struct prenotazione* Prenotazione;
  * Valore di ritorno:
  * Puntatore alla nuova Prenotazione, oppure NULL in caso di errore.
  */
-Prenotazione prenotazione_crea(Studente s, char* data, char* fascia);
+Prenotazione prenotazione_crea(Studente s, char* data, char* fascia, int posto_scelto);
 
 /**
  * Specifica sintattica:
@@ -115,6 +115,60 @@ int prenotazione_ottieni_stato(Prenotazione p);
 
 /**
  * Specifica sintattica:
+ * int prenotazione_ottieni_posto(Prenotazione p);
+ *
+ * Specifica semantica:
+ * Restituisce il numero del posto a sedere riservato durante la prenotazione.
+ *
+ * Pre-condizioni:
+ * p è un oggetto valido.
+ *
+ * Post-condizioni:
+ * Nessuna modifica.
+ *
+ * Valore di ritorno:
+ * Intero indicante il numero di posto. Restituisce -1 in caso di errore.
+ */
+int prenotazione_ottieni_posto(Prenotazione p);
+
+/**
+ * Specifica sintattica:
+ * char* prenotazione_ottieni_data(Prenotazione p);
+ *
+ * Specifica semantica:
+ * Restituisce la stringa contenente la data della prenotazione.
+ *
+ * Pre-condizioni:
+ * p è un oggetto valido.
+ *
+ * Post-condizioni:
+ * Nessuna modifica all'oggetto.
+ *
+ * Valore di ritorno:
+ * Puntatore alla stringa della data.
+ */
+char* prenotazione_ottieni_data(Prenotazione p);
+
+/**
+ * Specifica sintattica:
+ * char* prenotazione_ottieni_fascia(Prenotazione p);
+ *
+ * Specifica semantica:
+ * Restituisce la stringa contenente la fascia oraria della prenotazione.
+ *
+ * Pre-condizioni:
+ * p è un oggetto valido.
+ *
+ * Post-condizioni:
+ * Nessuna modifica all'oggetto.
+ *
+ * Valore di ritorno:
+ * Puntatore alla stringa della fascia oraria.
+ */
+char* prenotazione_ottieni_fascia(Prenotazione p);
+
+/**
+ * Specifica sintattica:
  * void prenotazione_stampa(Prenotazione p);
  *
  * Specifica semantica:
@@ -131,7 +185,6 @@ int prenotazione_ottieni_stato(Prenotazione p);
  */
 void prenotazione_stampa(Prenotazione p);
 
-
 /**
  * Specifica sintattica:
  * int valida_data(const char* data);
@@ -145,16 +198,12 @@ void prenotazione_stampa(Prenotazione p);
  * correttamente terminata dal carattere '\0' e non deve essere NULL.
  *
  * Post-condizioni:
- * lo stato del sistema e la stringa originale 'data' rimangono inalterati
- *(garantito dal quantificatore 'const'). La funzione termina restituendo un valore intero.
+ * Lo stato del sistema e la stringa originale 'data' rimangono inalterati.
  *
  * Valori di ritorno:
- * Ritorna 1 se la stringa rispetta il formato data richiesto.
- * Ritorna 0 se la lunghezza, i separatori o i caratteri non sono corretti.
-*/
-
+ * 1 se rispetta il formato, 0 se la lunghezza o i caratteri non sono corretti.
+ */
 int valida_data(const char* data);
-
 
 /**
  * Specifica sintattica:
@@ -169,15 +218,11 @@ int valida_data(const char* data);
  * correttamente terminata dal carattere '\0' e non deve essere NULL.
  *
  * Post-condizioni:
- * Lo stato delsistema e la stringa originale 'fascia' rimangono inalterati
- * (garantito dal quantificatore 'const'). La funzione termina restituendo un valore intero.
+ * Lo stato del sistema e la stringa originale 'fascia' rimangono inalterati.
  *
  * Valori di ritorno:
- * Ritorna 1 se la stringa rispetta il formato della fascia oraria richiesto.
- * Ritorna 0 se la lunghezza, i separatori oi caratteri non sono corretti.
-*/
-
+ * 1 se rispetta il formato, 0 se non corretto o incongruente logicamente.
+ */
 int valida_fascia(const char* fascia);
-
 
 #endif
