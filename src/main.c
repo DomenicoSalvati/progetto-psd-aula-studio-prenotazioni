@@ -139,6 +139,12 @@ int main(){
 					     printf("\n--- NUOVA PRENOTAZIONE ---\n");
 					     printf("Inserisci matricola (max 19 caratteri): ");
 					     scanf("%19s", mat_pren);
+
+						if(aula_studente_esiste(mia_aula, mat_pren)){
+								 printf(">>> ERRORE: Prenotazione rifiutata. Lo studente con matricola %s e' gia' registrato nel sistema.\n", mat_pren);
+								 break;
+								}
+
 					     printf("Inserisci nome(max 49 caratteri): ");
 					     scanf("%49s", nome_pren);
 					     printf("Inserisci corso(max 49 caratteri): ");
