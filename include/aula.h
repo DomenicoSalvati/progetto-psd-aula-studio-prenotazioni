@@ -65,21 +65,23 @@ void aula_distruggi(Aula* a);
 
 /**
  * Specifica sintattica:
- * int aula_ingresso(Aula a, Studente s);
+ * int aula_ingresso(Aula a, Studente s, int posto_richiesto);
  *
  * Specifica semantica:
- * Gestisce l'ingresso diretto di uno studente.
+ * Gestisce l'ingresso di uno studente assegnandogli un posto specifico nell'aula.
  *
  * Pre-condizioni:
  * L'oggetto 'a' e l'oggetto 's' devono essere puntatori validi (non NULL).
+ * 'posto_richiesto' deve essere un intero compreso tra 0 e (capienza_massima - 1).
  *
  * Post-condizioni:
- * Lo studente viene inserito nei posti a sedere o nella coda d'attesa.
+ * Lo studente viene inserito nel posto specifico a sedere. Se il posto e'
+ * gia' occupato o l'aula e' piena, lo studente va nella coda d'attesa.
  *
  * Valore di ritorno:
- * 1 (seduto), 2 (in coda d'attesa), 0 (errore).
+ * 1 (seduto), 2 (in coda d'attesa), 0 (errore o posto non valido).
  */
-int aula_ingresso(Aula a, Studente s);
+int aula_ingresso(Aula a, Studente s, int posto_richiesto);
 
 
 /**
@@ -93,7 +95,7 @@ int aula_ingresso(Aula a, Studente s);
  * 'a' e 'matricola_da_cercare' non devono essere NULL.
  *
  * Post-condizioni:
- * Lo studente esce dall'aula, subentra il primo in coda.
+ * Lo studente esce dall'aula, subentra nel medesimo posto il primo in coda.
  *
  * Valore di ritorno:
  * 1 (successo), 0 (studente non presente).
@@ -142,7 +144,8 @@ int aula_aggiungi_prenotazione(Aula a, Prenotazione p);
  * int aula_checkin_prenotazione(Aula a, char* matricola);
  *
  * Specifica semantica:
- * Convalida l'arrivo di uno studente prenotato facendolo fisicamente entrare.
+ * Convalida l'arrivo di uno studente prenotato facendolo fisicamente entrare
+ * nel posto che aveva riservato.
  *
  * Pre-condizioni:
  * 'a' e 'matricola' validi.
@@ -191,7 +194,22 @@ int aula_annulla_prenotazione(Aula a, char* matricola);
  */
 void aula_stampa_report_prenotazioni(Aula a);
 
-/***/
+/**
+ * Specifica sintattica:
+ * int aula_studente_esiste(Aula a, char* matricola);
+ *
+ * Specifica semantica:
+ * Controlla se una matricola è attualmente seduta in aula tramite ricerca rapida.
+ *
+ * Pre-condizioni:
+ * 'a' e 'matricola' validi.
+ *
+ * Post-condizioni:
+ * Nessuna.
+ *
+ * Valore di ritorno:
+ * 1 (se presente), 0 (se non presente).
+ */
 int aula_studente_esiste(Aula a, char* matricola);
 
 #endif

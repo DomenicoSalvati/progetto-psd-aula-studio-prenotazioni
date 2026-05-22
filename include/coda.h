@@ -1,10 +1,10 @@
 /**
  * File: coda.h
  * Autore: Domenico
- * Data: Aprile 2026
+ * Data: creato Aprile 2026, fine implementazioni Maggio 2026.
  *
  * Descrizione: Interfaccia dell'ADT Coda FIFO (First In, First Out).
- * Gestisce la lista d'attesa degli studenti quando l'aula è satura.
+ * Gestisce la lista d'attesa degli studenti quando l'aula è piena.
  */
 
 #ifndef CODA_H // Se non è definita la macro di coda.h allora definisci coda.h.
@@ -136,5 +136,23 @@ void coda_distruggi(Coda* q);
  * Nessuno (void).
  */
 void coda_stampa(Coda q);
+
+/**
+ * Specifica sintattica:
+ * int coda_lunghezza(Coda q);
+ *
+ * Specifica semantica:
+ * Restituisce il numero di elementi attualmente presenti nella lista d'attesa.
+ *
+ * Pre-condizioni:
+ * La coda 'q' deve essere un puntatore valido (non NULL).
+ *
+ * Post-condizioni:
+ * Nessuna modifica interna alla coda.
+ *
+ * Valore di ritorno:
+ * Il numero intero di elementi presenti, 0 se la coda è vuota o non valida.
+ */
+int coda_lunghezza(Coda q);
 
 #endif
