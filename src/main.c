@@ -45,11 +45,11 @@ int main() {
         printf("0. Esci\n");
         printf("Scegli un'opzione: ");
 
-        // Validazione dell'input per prevenire loop causati da caratteri non numerici
+        // Validazione dell'input per prevenire loop causati da caratteri non numerici e pulizia buffer
         if (scanf("%d", &scelta) != 1) {
-            while (getchar() != '\n');
             scelta = -1;
         }
+        while (getchar() != '\n');
 
         switch (scelta) {
             case 1: {
@@ -62,6 +62,7 @@ int main() {
 
                 printf("Inserisci matricola (alfanumerica e max 19 caratteri): ");
                 scanf("%19s", matricola);
+                while (getchar() != '\n');
 
                 if (aula_studente_esiste(mia_aula, matricola)) {
                     printf(">>> ERRORE: Ingresso rifiutato. Lo studente con matricola %s e' gia' presente in aula.\n", matricola);
@@ -70,16 +71,19 @@ int main() {
 
                 printf("Inserisci nome (senza spazi e max 49 caratteri): ");
                 scanf("%49s", nome);
+                while (getchar() != '\n');
 
                 printf("Inserisci il corso di laurea (senza spazi e max 49 caratteri): ");
                 scanf("%49s", corso);
+                while (getchar() != '\n');
 
                 printf("Inserisci il posto desiderato (da 0 a 49): ");
                 if (scanf("%d", &posto_scelto) != 1) {
-                    while (getchar() != '\n');
                     printf(">>> ERRORE: Input non valido per il posto.\n");
+                    while (getchar() != '\n');
                     break;
                 }
+                while (getchar() != '\n');
 
                 Studente s = studente_crea(matricola, nome, corso);
                 if (s == NULL) {
@@ -107,6 +111,7 @@ int main() {
                 printf("\n--- USCITA STUDENTE ---\n");
                 printf("Inserisci la matricola dello studente uscente (max 19 caratteri): ");
                 scanf("%19s", matricola_uscente);
+                while (getchar() != '\n');
 
                 int esito = aula_uscita(mia_aula, matricola_uscente);
 
@@ -137,9 +142,9 @@ int main() {
                     printf("Scegli un'opzione: ");
 
                     if (scanf("%d", &scelta_prenotazione) != 1) {
-                        while (getchar() != '\n');
                         scelta_prenotazione = -1;
                     }
+                    while (getchar() != '\n');
 
                     switch (scelta_prenotazione) {
                         case 1: {
@@ -150,6 +155,7 @@ int main() {
                             printf("\n--- NUOVA PRENOTAZIONE ---\n");
                             printf("Inserisci matricola (max 19 caratteri): ");
                             scanf("%19s", mat_pren);
+                            while (getchar() != '\n');
 
                             if (aula_studente_esiste(mia_aula, mat_pren)) {
                                 printf(">>> ERRORE: Prenotazione rifiutata. Lo studente con matricola %s e' gia' registrato.\n", mat_pren);
@@ -158,12 +164,15 @@ int main() {
 
                             printf("Inserisci nome (max 49 caratteri): ");
                             scanf("%49s", nome_pren);
+                            while (getchar() != '\n');
 
                             printf("Inserisci corso (max 49 caratteri): ");
                             scanf("%49s", corso_pren);
+                            while (getchar() != '\n');
 
                             printf("Inserisci data (GG/MM/AAAA, max 14 caratteri): ");
                             scanf("%14s", data_pren);
+                            while (getchar() != '\n');
 
                             // Intercettazione e valutazione della coerenza cronologica dell'anno inserito
                             if (valida_data(data_pren)) {
@@ -180,6 +189,8 @@ int main() {
 
                             printf("Inserisci fascia oraria (es. 09:00-11:00, max 29 caratteri): ");
                             scanf("%29s", fascia_pren);
+                            while (getchar() != '\n');
+
                             if (!valida_fascia(fascia_pren)) {
                                 printf(">>> ERRORE: Formato fascia non valido o illogico. Rispettare HH:MM-HH:MM.\n");
                                 break;
@@ -187,10 +198,11 @@ int main() {
 
                             printf("Inserisci il posto da riservare (da 0 a 49): ");
                             if (scanf("%d", &posto_prenotato) != 1) {
-                                while (getchar() != '\n');
                                 printf(">>> ERRORE: Input numerico non valido per il posto.\n");
+                                while (getchar() != '\n');
                                 break;
                             }
+                            while (getchar() != '\n');
 
                             Studente stud = studente_crea(mat_pren, nome_pren, corso_pren);
                             Prenotazione pren = prenotazione_crea(stud, data_pren, fascia_pren, posto_prenotato);
@@ -214,6 +226,7 @@ int main() {
                             printf("\n--- EFFETTUA CHECK-IN ---\n");
                             printf("Inserisci la matricola dello studente (max 19 caratteri): ");
                             scanf("%19s", mat_checkin);
+                            while (getchar() != '\n');
 
                             int risultato = aula_checkin_prenotazione(mia_aula, mat_checkin);
 
@@ -235,6 +248,7 @@ int main() {
                             printf("\n--- ANNULLA PRENOTAZIONE ---\n");
                             printf("Inserisci la matricola della pratica da annullare (max 19 caratteri): ");
                             scanf("%19s", mat_annulla);
+                            while (getchar() != '\n');
 
                             if (aula_annulla_prenotazione(mia_aula, mat_annulla)) {
                                 printf(">>> SUCCESSO: Prenotazione rimossa definitivamente dal sistema.\n");
