@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# file bin executable
+
+test_gestore
+gestore_aula
