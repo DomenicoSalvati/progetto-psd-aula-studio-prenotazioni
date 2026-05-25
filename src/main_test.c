@@ -31,7 +31,7 @@ void test_registrazione_studenti(void) {
 void test_ingresso_senza_prenotazione(void) {
     Aula a = aula_crea("AulaTest", 5);
     Studente s = studente_crea("MAT02", "Luigi", "Fisica");
-    
+
     int esito = aula_ingresso(a, s, 0); // Assegna Luigi al posto 0
     assert(esito == 1);
 
@@ -61,7 +61,7 @@ void test_inserimento_prenotazioni(void) {
     Aula a = aula_crea("AulaTest", 5);
     Studente s = studente_crea("MAT05", "Yoshi", "Biologia");
     Prenotazione p = prenotazione_crea(s, "20/06/2026", "09:00-11:00", 2);
-    
+
     assert(aula_aggiungi_prenotazione(a, p) == 1);
 
     aula_distruggi(&a);
@@ -74,10 +74,10 @@ void test_disponibilita_posti(void) {
     Aula a = aula_crea("AulaTest", 5);
     Studente s1 = studente_crea("MAT06", "Bowser", "Ingegneria");
     Studente s2 = studente_crea("MAT07", "Wario", "Economia");
-    
+
     Prenotazione p1 = prenotazione_crea(s1, "20/06/2026", "10:00-12:00", 3);
     // Creiamo un conflitto di orario per lo stesso posto (3)
-    Prenotazione p_conflitto = prenotazione_crea(s2, "20/06/2026", "11:00-13:00", 3); 
+    Prenotazione p_conflitto = prenotazione_crea(s2, "20/06/2026", "11:00-13:00", 3);
 
     assert(aula_aggiungi_prenotazione(a, p1) == 1);
     assert(aula_aggiungi_prenotazione(a, p_conflitto) == 0);
@@ -95,7 +95,7 @@ void test_annullamento_disponibilita(void) {
     Aula a = aula_crea("AulaTest", 5);
     Studente s = studente_crea("MAT08", "Daisy", "Chimica");
     Prenotazione p = prenotazione_crea(s, "20/06/2026", "09:00-11:00", 1);
-    
+
     aula_aggiungi_prenotazione(a, p);
     assert(aula_annulla_prenotazione(a, "MAT08") == 1); // L'annullamento deve riuscire
 
@@ -109,7 +109,7 @@ void test_checkin_checkout(void) {
     Aula a = aula_crea("AulaTest", 5);
     Studente s = studente_crea("MAT09", "Waluigi", "Lettere");
     Prenotazione p = prenotazione_crea(s, "20/06/2026", "14:00-16:00", 4);
-    
+
     aula_aggiungi_prenotazione(a, p);
 
     assert(aula_checkin_prenotazione(a, "MAT09") == 1);
@@ -123,13 +123,13 @@ void test_checkin_checkout(void) {
  * ------------------------------------------------------------------ */
 void test_storico_report(void) {
     Aula a = aula_crea("AulaTest", 5);
-    
+
     // Invochiamo la funzione di report su un'aula vuota per testarne
     // la stabilità ed evitare segmentation fault
     aula_stampa_report_prenotazioni(a);
-    
+
     assert(1 == 1); // Asserzione passiva, garantisce che non ci siano stati crash a runtime
-    
+
     aula_distruggi(&a);
 }
 
@@ -146,11 +146,11 @@ int main(void) {
     test_disponibilita_posti();
     test_annullamento_disponibilita();
     test_checkin_checkout();
-    
-    printf("\n");
-    test_storico_report(); 
 
-    // Se si giunge a questa linea, significa che nessun assert() 
+    printf("\n");
+    test_storico_report();
+
+    // Se si giunge a questa linea, significa che nessun assert()
     // ha bloccato il programma, confermando la solidità del codice.
     printf("\n --- TEST SUPERATI ---\n");
 
